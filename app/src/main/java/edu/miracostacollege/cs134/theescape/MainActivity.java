@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private Player player;
     private Zombie zombie;
 
+    //Game Board to represent current levels pathways and obstacles
     final int gameBoard[][] = {
             {OBST, OBST, OBST, OBST, OBST, OBST, OBST, OBST},
             {OBST, FREE, FREE, FREE, FREE, FREE, OBST, OBST},
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     ImageView viewBoard[][] = new ImageView[TOTAL_ROWS][TOTAL_COLS];
 
+    //Load Game Board and current wins/losses
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +87,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private void startNewGame() {
 
-        //Nested for loop
         for(int i = 0; i < TOTAL_ROWS; i++){
-            //Get each row
+            //Get each row on the game board
             LinearLayout row = (LinearLayout) boardLinearLayout.getChildAt(i);
             //Get each imageView in that row
             for(int j = 0; j < TOTAL_COLS; j++){
@@ -127,20 +128,21 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         //DONE: Instantiate a new Player object at PLAYER_ROW, PLAYER_COL
         //DONE: Set the imageView at that position to R.drawable.player
 
-        //DONE: Instantiate a new Zombie object at ZOMBIE_ROW, ZOMBIE_COL
-        //DONE: Set the imageView at that position to R.drawable.zombie
+        //Instantiate a new Zombie object at ZOMBIE_ROW, ZOMBIE_COL
+        //Set the imageView at that position to R.drawable.zombie
     }
 
     private void movePlayer(float velocityX, float velocityY) {
-        //DONE: Set the player's current image view drawable to null
+        //Set the player's current image view drawable to null
         viewBoard[player.getRow()][player.getCol()].setImageDrawable(null);
         Direction direction;
 
-        //DONE: Determine the direction of the fling (based on velocityX and velocityY)
+        //Determine the direction of the fling (based on velocityX and velocityY)
 
         float absX = Math.abs(velocityX);
         float absY = Math.abs(velocityY);
 
+        //The velocity must exceed FLING_THRESHOLD to count (otherwise, it's not really a move)
         if(absY > absX){
             if(velocityY < 0)
                 direction = UP;
@@ -154,65 +156,50 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
 
         player.move(gameBoard, direction);
-        //DONE: The velocity must exceed FLING_THRESHOLD to count (otherwise, it's not really a move)
-        //DONE: Move the player
-        //DONE: Set the player's current image view to R.drawable.player after the move
+
+        //Set the player's current image view to R.drawable.player after the move
 
         viewBoard[player.getRow()][player.getCol()].setImageResource(R.drawable.male_player);
     }
 
     private void moveZombie() {
-        //DONE: Set the zombie's current image view drawable to null
+        //Set the zombie's current image view drawable to null
         viewBoard[zombie.getRow()][zombie.getCol()].setImageDrawable(null);
-        //DONE: Move the zombie
+        //Move the zombie
         zombie.move(gameBoard, player.getRow(), player.getCol());
-        //DONE: Set the zombie's current image view to R.drawable.zombie after the move
+        //Set the zombie's current image view to R.drawable.zombie after the move
         viewBoard[zombie.getRow()][zombie.getCol()].setImageResource(R.drawable.zombie);
     }
 
+    //Determine the outcome of the game (win or loss)
+    //It's a win if the player's row/col is the same as the exit row/col
+    //It's a loss if the player's row/col is the same as the zombie's row/col
     private void determineOutcome() {
-        //DONE: Determine the outcome of the game (win or loss)
-        //DONE: It's a win if the player's row/col is the same as the exit row/col
-        //DONE: Call the handleWin() method
-
-        //DONE: It's a loss if the player's row/col is the same as the zombie's row/col
-        //DONE: Call the handleLoss() method
-
-        //DONE: Otherwise, do nothing, just return.
 
         if(player.getRow() == zombie.getRow() && player.getCol() == zombie.getCol()){
             handleLoss();
         }else if(player.getRow() == EXIT_ROW && player.getCol() == EXIT_COL){
             handleWin();
-        } else {
-            return;
         }
     }
 
+    //Called if player wins
+    //Increments players number of wins and begins a new game
     private void handleWin()
     {
-        //DONE: Implement the handleWin() method by accomplishing the following:
-        //DONE: Increment the wins
         wins++;
-        //DONE: Set the imageView (at the zombie's row/col) to the R.drawable.bunny
+        //Set the imageView (at the zombie's row/col) to the R.drawable.bunny
         viewBoard[zombie.getRow()][zombie.getCol()].setImageResource(R.drawable.bunny);
-        //TODO: Start an animation
-
-        //TODO: Wait 2 seconds, then start a new game
         startNewGame();
     }
 
+    //Called if player loses
+    //Increments players number of losses and begins a new game
     private void handleLoss()
     {
-        //DONE: Implement the handleLoss() method by accomplishing the following:
-        //DONE: Increment the losses
         losses++;
-        //DONE: Set the imageView (at the player's row/col) to the R.drawable.blood
+        //Set the imageView (at the player's row/col) to the R.drawable.blood
         viewBoard[player.getRow()][player.getCol()].setImageResource(R.drawable.blood);
-        //TODO: Start an animation
-
-        //TODO: Wait 2 seconds, then start a new game
-
         startNewGame();
     }
 
