@@ -1,7 +1,7 @@
 package edu.miracostacollege.cs134.theescape.model;
 
 /**
- * The <code>Player</code> class represents the player (coder) in The Escape game.
+ * The <code>Player</code> class represents the player in The Escape game.
  * Players can move UP, DOWN, LEFT or RIGHT.  A player's position is kept by row/col
  * coordinates on a 2D board.
  */
